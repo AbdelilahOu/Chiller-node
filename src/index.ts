@@ -1,10 +1,10 @@
 // generate a file with random data run in the terminal
 // node -e "process.stdout.write(crypto.randomBytes(1e9))" > big.file
 
-import { randomUUID } from "node:crypto";
 import { Readable, Transform, TransformCallback } from "node:stream";
 import http, { IncomingMessage, OutgoingMessage } from "node:http";
 import { createReadStream } from "node:fs";
+import { randomUUID } from "node:crypto";
 
 function* run() {
   for (let index = 0; index < 99; index++) {
@@ -25,7 +25,11 @@ const CreateYourOwnDataHandler = (
         this.push(JSON.stringify(data).concat("\n"));
       }
     },
-  }).pipe(res);
+  })
+    .pipe(res)
+    .on("finish", () => {
+      console.log("reading file done");
+    });
 };
 
 // if we wanna read from a file
@@ -45,7 +49,10 @@ const ReadFromFileHnadler = (req: IncomingMessage, res: OutgoingMessage) => {
         },
       })
     )
-    .pipe(res);
+    .pipe(res)
+    .on("finish", () => {
+      console.log("reading file done");
+    });
 };
 
 http

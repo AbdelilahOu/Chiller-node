@@ -9,5 +9,7 @@ const getHttpStream = (): Promise<IncomingMessage> => {
 
 (async () => {
   const stream: IncomingMessage = await getHttpStream();
-  stream.pipe(createWriteStream("output.text"));
+  stream.pipe(createWriteStream("output.text")).on("finish", () => {
+    console.log("writing from stream done");
+  });
 })();
